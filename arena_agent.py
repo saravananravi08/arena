@@ -37,8 +37,11 @@ import json
 import logging
 import os
 import re
+import urllib.parse
 import uuid
 from typing import Optional
+
+import httpx
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -82,6 +85,7 @@ GITHUB_URL = "https://github.com/saravananravi08/arena"  # ← update if needed
 GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 TRACELOOP_API_KEY = os.environ.get("TRACELOOP_API_KEY", "")
+JINA_API_KEY = os.environ.get("JINA_API_KEY", "")
 
 MAX_TURNS = 20  # safety cap — stops after this many task attempts
 
@@ -475,7 +479,84 @@ def make_tools(state: RunState) -> list:
             f"History: {json.dumps(state.level_history, indent=2)}"
         )
 
-    return [register_agent, get_tasks, skip_task, submit_task, report_status]
+    async def web_search(query: str) -> str:
+        """
+        Search the web for up-to-date information using Jina's search API.
+
+        Use this when the task requires current facts, recent events, library
+        versions, API references, or anything you are unsure about. Returns the
+        top ~5 results as markdown (title, URL, snippet for each).
+
+        Args:
+            query: Natural-language search query (e.g. "Rust async traits 2026").
+
+        Returns:
+            Markdown-formatted list of search results, or an ERROR string.
+        """
+        if not JINA_API_KEY:
+            return "ERROR: JINA_API_KEY is not set; web_search unavailable."
+        url = f"https://s.jina.ai/?q={urllib.parse.quote(query)}"
+        headers = {"Authorization": f"Bearer {JINA_API_KEY}"}
+        print(f"  [web_search] q={query[:60]!r}")
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                r = await client.get(url, headers=headers)
+                r.raise_for_status()
+                text = r.text
+        except httpx.HTTPStatusError as e:
+            return f"ERROR: web_search HTTP {e.response.status_code}: {e.response.text[:300]}"
+        except httpx.TimeoutException:
+            return "ERROR: web_search timed out after 30s."
+        except Exception as e:
+            return f"ERROR: web_search failed: {e}"
+        if len(text) > 8000:
+            text = text[:8000] + "\n…[truncated to 8000 chars]"
+        return text
+
+    async def read_webpage(url: str) -> str:
+        """
+        Fetch a webpage and return its main content as clean markdown.
+
+        Use this after web_search to read a specific result, or whenever the
+        task gives you a URL. Strips nav/ads/scripts — only the article body.
+
+        Args:
+            url: Fully-qualified http(s) URL to fetch.
+
+        Returns:
+            Clean markdown of the page, or an ERROR string.
+        """
+        if not JINA_API_KEY:
+            return "ERROR: JINA_API_KEY is not set; read_webpage unavailable."
+        if not url.startswith(("http://", "https://")):
+            return f"ERROR: read_webpage requires an http(s) URL, got: {url[:80]}"
+        reader_url = f"https://r.jina.ai/{url}"
+        headers = {"Authorization": f"Bearer {JINA_API_KEY}"}
+        print(f"  [read_webpage] {url[:80]}")
+        try:
+            async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
+                r = await client.get(reader_url, headers=headers)
+                r.raise_for_status()
+                text = r.text
+        except httpx.HTTPStatusError as e:
+            return f"ERROR: read_webpage HTTP {e.response.status_code}: {e.response.text[:300]}"
+        except httpx.TimeoutException:
+            return "ERROR: read_webpage timed out after 30s."
+        except Exception as e:
+            return f"ERROR: read_webpage failed: {e}"
+        if len(text) > 8000:
+            text = text[:8000] + "\n…[truncated to 8000 chars]"
+        return text
+
+    return [
+        register_agent,
+        get_tasks,
+        skip_task,
+        submit_task,
+        report_status,
+        web_search,
+        read_webpage,
+    ]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -496,6 +577,11 @@ LIFECYCLE (follow this exactly):
    a. Call get_tasks(agent_id) to fetch the current challenge.
    b. If NO_TASKS: call report_status() and stop.
    c. Read the task description carefully.
+   c.5 RESEARCH (optional): If the task asks about current facts, specific
+       libraries/APIs, recent events, or anything you are unsure of, call
+       web_search(query) and then read_webpage(url) on the most relevant
+       result before drafting your answer. Skip this for pure-reasoning
+       or coding tasks where you already know the answer with confidence.
    d. Craft a high-quality, complete, technically correct answer IN YOUR RESPONSE.
       The answer must be thorough — the evaluator scores on correctness,
       efficiency, and robustness. Aim for 90+/100.
@@ -513,6 +599,7 @@ RULES:
 - Never submit the same task_id twice.
 - Always use the task_id from the most recent get_tasks call.
 - Make your answers as complete and detailed as possible — quality matters.
+- Use web_search / read_webpage to ground answers when factual accuracy matters.
 - Do not ask for confirmation — act autonomously.
 """.strip()
 

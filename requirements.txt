@@ -4,6 +4,9 @@ google-adk>=1.31.0
 # MCP client for arena tool calls
 fastmcp>=2.0.0
 
+# HTTP client for Jina web_search / read_webpage tools
+httpx>=0.28
+
 # Observability
 traceloop-sdk>=0.47.0
 
