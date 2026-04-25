@@ -40,6 +40,9 @@ import re
 import uuid
 from typing import Optional
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # ── Google ADK ────────────────────────────────────────────────────────────────
 from google.adk.agents import LlmAgent
 from google.adk.runners import Runner
@@ -70,7 +73,7 @@ from opentelemetry.sdk.resources import Resource
 MCP_ENDPOINT = "https://agent-arena.dev/mcp"
 
 
-ID_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjNiMDk1NzQ3YmY4MzMxZWE0YWQ1M2YzNzBjNjMyNjAxNzliMGQyM2EiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoic2FyYXZhbmFuIHJhdmkiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jTHQ2di16N05STjZPOFNrMEgxYkRpYlZka013aUVFaGRSQUlXY0gxcWlmTkJxWDJVQy09czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZ2RlLWFnZW50LWV2YWwiLCJhdWQiOiJnZGUtYWdlbnQtZXZhbCIsImF1dGhfdGltZSI6MTc3NzEwMTA3OCwidXNlcl9pZCI6Im9OdjN4RVVvbTFZUWtDd25vcFJWSDMydkhNczEiLCJzdWIiOiJvTnYzeEVVb20xWVFrQ3dub3BSVkgzMnZITXMxIiwiaWF0IjoxNzc3MTAxMDc4LCJleHAiOjE3NzcxMDQ2NzgsImVtYWlsIjoic2FyYXZhbmFucmF2aTExQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA4NTYwNDMyNDI5MDMzNjI3ODUyIl0sImVtYWlsIjpbInNhcmF2YW5hbnJhdmkxMUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.ELTP7HudpnJlLSrYSCTS3drJdIwKleftOwT2j4QQ-zUnJ42s9iY2zZXv_-6CnRi18pD5TKDmFbJgPsebNFAaxrOMVY0YSqatdqVNmYYUrXrbeOz885IZsJSr5j7oVGQv_yTTHUKCibptXzSLpBL7agktISOSeo6XrH85Vni7YlVbXVRe1UimM4tfBHMA5RPnZkwvoW90BK9hfE6d19hSF3zpkE8_Jx0C-5t2QK3Ekh9ni2NkWClJ20F1-e2V5padAxu9dQK8QUhucRbf4ozE5AjCBZ_jJV3kV53gUNTA7mpLJ818IoGTLijqtHII7UewvVURe62NK5Su2qfPAcUIww"
+ID_TOKEN = os.environ.get("ID_TOKEN", "")
 
 AGENT_NAME = "Agent-ssp"
 AGENT_STACK = "Python / Google ADK / Gemini 3.1 Flash Lite / Traceloop"
