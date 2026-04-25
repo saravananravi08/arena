@@ -70,50 +70,58 @@ from opentelemetry.sdk.resources import Resource
 MCP_ENDPOINT = "https://agent-arena.dev/mcp"
 
 
-ID_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjcwZmM5YzU0YjhiMjQyMWZmMTgyOTgxNTQyZmQ0NjRlOWJlYzM1NDUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSm9pbmFsIEFobWVkIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hLS9BTFYtVWpYSzVYQzVTTnJCMXFQWXBMNGlWUmM0VHdtd2hHbzlTbTBaTjBsVTNBa3NuQ2JyVkg1QVROUHFSYV9vak4zeThJclYtTjNmT2dHMVk4YV9vYndvSWN6eE5RNmQ0al9JX1FMTUNNbjB4bXlCdThXWnl0OGFqYzVFeGhoOWZSR0FEanp3LWhjRDZGX1BfSDFYQ3Y2YzkwbktSZ2c0ZmlZMHY5WkJHZ29qeDU4ekNjSThIMlNrbDJIeU5LcklHR1NoTF83b1BZVjBSdFRuYXlLMldBX1ZmLVZjRXBBbWRxMGZnWWdndm9tbW9lMzVaQV9zTGR4UkVGN2UzbHQ2RTJoM1RkQmJ0bTl2aEdWbTQ5MjRQUUYxVnkxZmpIRVpEQ213eHNxY3B5LTF6VEFoM0dyLVp5c3FPRUVqRnBuejBwRmtKWEVWRWNUQlpPajJxOGZjNXEtdUVzR01MMy1tZW9Bb09tcUJIU3lsTDhDaXRZa1BMR1dWNVJON2w2S0dOSTNJd3FfOU1wUzdlUUU3VllyenJ1VEZ6ME1WdnFpOVRyMmZGOWc1a242djJ1aGh6UUdaczhXVlFObl8zcjh2QjV5bnJubzB0QlBreWplRzl0ZWs2N1BGOGNoc1VMeWl1X1I2cGRCMS1ydGVwckZ5VVJzazJWcUVqMFRUaXpWdWRSNkJwN1VYVmtpTUNqb0p5ZW92VkdXU2JtVk1hOVp2NFlwRDNzLUU1UW12bXVBOVJyUEIzRG9ZUm43N1BTU2tfQ2hjZzBwZ2h1UWJ6bEVOUndjSlRiLTdLalNub3NnVUpFanJmV0FKTFBEOE9aUHFtWlZxZVV5U2dlOW04U1NESWFMQmt2Y3JuQnlwdlpOR3ZNOGg3QjY5Y3VZRFFWUnU4dHBBR1FMaVBFaG4zQ24zWmxQZHhjaGNqV1hfbDBUallqWkJ0QlhmTXA3cVg3TzJSLWhWZTdrdjktbkZaQTctNWpEelczUTU0aUZFc3J2dlhVYWxlTGJXS0h6U3htaFVDTF9iaVg4ZElJeGQteU9vblJrQ0JObWdRdEdCS2lfNWo0OW9PNGJQSGFBV1VkdUE2M3Mzd1BzckJiYU9FR0ZfLU9IekpkT1dNTmNqQjBOdlNiMVNIcFRZWXg2eTdUUlBRQUEwXzljNnNxazM2aEtnRk1ndENreHB1Sko0MlJyMWZ6RVRCNHBlYUtpTUVFaTdWMERLZHE3S0V0TmlPdjQxelhObFlnMGpOQUVJajk0bkkwWmdmRU5xMnIxRjFpZE5NU21QVmJuLTlhMHF0ZXhkd0F3bjhib3lYblEzX2Y0ei1xU2RoY1hqRE5laTZDZVJveFdZZjNiX3RPQ0xiV082MGtOX3loTDZQMUJRamxOa3lHeDBlTUw3aERPRFR0STNLNHZ6aE9kRWdFajFldkt0T2d4MXhjNlM2dDg9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZ2RlLWFnZW50LWV2YWwiLCJhdWQiOiJnZGUtYWdlbnQtZXZhbCIsImF1dGhfdGltZSI6MTc3NjU4MDE4NywidXNlcl9pZCI6InZQWExyZE5EWjVOTVN5azdERVY3TUVvdEdPejIiLCJzdWIiOiJ2UFhMcmRORFo1Tk1TeWs3REVWN01Fb3RHT3oyIiwiaWF0IjoxNzc2NTkzMzkxLCJleHAiOjE3NzY1OTY5OTEsImVtYWlsIjoiam9pbmFsYWhtZWRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMDIwOTY1ODY1OTg1MDEzNTAyOTUiXSwiZW1haWwiOlsiam9pbmFsYWhtZWRAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.xJY_ja7BIgkEhyuhYtdVr60sua0B6VWwgMZrWOz703WAVZ-kv5QeHT9aLS4SDM4_mJaUgMfEXGOg4BLs6RXjtDDfNuuNFigHW7fmX68ZFRM51GSvUGGzSPd-GX5wXr1MnspqGhlap_lq5O7uIvecDiegU0cKYJ92gzSq8TDfdJ6BGeBg-d7os9cPgWsK9_FZbhN5vINV_d3jYWqvPRo96bXsNZIsiSJlbYc7HuqrIu2AL8upK1Yz3BCmdPbGR2uM_N2Ite92wrqQwcF81YHkBDOEIWwECtq-ErOC0MW1O3orshIDQqKl_zIwe5DZJik43RgjkBfWdYS4cPFIQRhylw"
+ID_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjNiMDk1NzQ3YmY4MzMxZWE0YWQ1M2YzNzBjNjMyNjAxNzliMGQyM2EiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoic2FyYXZhbmFuIHJhdmkiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jTHQ2di16N05STjZPOFNrMEgxYkRpYlZka013aUVFaGRSQUlXY0gxcWlmTkJxWDJVQy09czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZ2RlLWFnZW50LWV2YWwiLCJhdWQiOiJnZGUtYWdlbnQtZXZhbCIsImF1dGhfdGltZSI6MTc3NzEwMTA3OCwidXNlcl9pZCI6Im9OdjN4RVVvbTFZUWtDd25vcFJWSDMydkhNczEiLCJzdWIiOiJvTnYzeEVVb20xWVFrQ3dub3BSVkgzMnZITXMxIiwiaWF0IjoxNzc3MTAxMDc4LCJleHAiOjE3NzcxMDQ2NzgsImVtYWlsIjoic2FyYXZhbmFucmF2aTExQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA4NTYwNDMyNDI5MDMzNjI3ODUyIl0sImVtYWlsIjpbInNhcmF2YW5hbnJhdmkxMUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.ELTP7HudpnJlLSrYSCTS3drJdIwKleftOwT2j4QQ-zUnJ42s9iY2zZXv_-6CnRi18pD5TKDmFbJgPsebNFAaxrOMVY0YSqatdqVNmYYUrXrbeOz885IZsJSr5j7oVGQv_yTTHUKCibptXzSLpBL7agktISOSeo6XrH85Vni7YlVbXVRe1UimM4tfBHMA5RPnZkwvoW90BK9hfE6d19hSF3zpkE8_Jx0C-5t2QK3Ekh9ni2NkWClJ20F1-e2V5padAxu9dQK8QUhucRbf4ozE5AjCBZ_jJV3kV53gUNTA7mpLJ818IoGTLijqtHII7UewvVURe62NK5Su2qfPAcUIww"
 
-AGENT_NAME    = "AgentVinod-v5"
-AGENT_STACK   = "Python / Google ADK / Gemini 3.1 Flash Lite / Traceloop"
-LINKEDIN_URL  = "https://www.linkedin.com/in/joinalahmed"   # ← update if needed
-GITHUB_URL    = "https://github.com/agentvinod"             # ← update if needed
-GEMINI_MODEL   = "gemini-3.1-flash-lite-preview"
+AGENT_NAME = "Agent-ssp"
+AGENT_STACK = "Python / Google ADK / Gemini 3.1 Flash Lite / Traceloop"
+LINKEDIN_URL = "https://www.linkedin.com/in/saravananravi08/"  # ← update if needed
+GITHUB_URL = "https://github.com/saravananravi08/arena"  # ← update if needed
+GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 TRACELOOP_API_KEY = os.environ.get("TRACELOOP_API_KEY", "")
 
-MAX_TURNS = 20   # safety cap — stops after this many task attempts
+MAX_TURNS = 20  # safety cap — stops after this many task attempts
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Run-scoped state  (shared across all tool calls in one run)
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class RunState:
     """Mutable state shared across all tool calls and turns in one run."""
+
     def __init__(self) -> None:
-        self.run_id       = str(uuid.uuid4())
+        self.run_id = str(uuid.uuid4())
         self.execution_id = str(uuid.uuid4())
-        self.agent_id     = ""
-        self.task_id      = ""
+        self.agent_id = ""
+        self.task_id = ""
         self.conversation_id = ""
 
         # Scoreboard
         self.current_level = 1
-        self.total_score   = 0
+        self.total_score = 0
         self.tasks_attempted = 0
-        self.tasks_passed    = 0
-        self.level_history: list[dict] = []   # [{level, task_title, score, levelled_up}]
+        self.tasks_passed = 0
+        self.level_history: list[dict] = []  # [{level, task_title, score, levelled_up}]
 
-    def record(self, level: int, task_title: str, score: int, levelled_up: bool) -> None:
+    def record(
+        self, level: int, task_title: str, score: int, levelled_up: bool
+    ) -> None:
         self.tasks_attempted += 1
-        self.total_score     += score
+        self.total_score += score
         if levelled_up or score >= 70:
             self.tasks_passed += 1
         if levelled_up:
             self.current_level = level + 1
-        self.level_history.append({
-            "level": level, "task": task_title,
-            "score": score, "levelled_up": levelled_up,
-        })
+        self.level_history.append(
+            {
+                "level": level,
+                "task": task_title,
+                "score": score,
+                "levelled_up": levelled_up,
+            }
+        )
 
     def scoreboard(self) -> str:
         lines = [
@@ -127,7 +135,9 @@ class RunState:
             f"{'─'*55}",
         ]
         for entry in self.level_history:
-            icon = "✓" if entry["levelled_up"] else ("~" if entry["score"] >= 70 else "✗")
+            icon = (
+                "✓" if entry["levelled_up"] else ("~" if entry["score"] >= 70 else "✗")
+            )
             lines.append(
                 f"  {icon} L{entry['level']}  {entry['task'][:35]:<35}  {entry['score']:>3}/100"
             )
@@ -138,6 +148,7 @@ class RunState:
 # ─────────────────────────────────────────────────────────────────────────────
 # Logging
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class _OtelOnlyFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
@@ -157,12 +168,13 @@ def _make_logger(name: str) -> logging.Logger:
 
 
 agent_logger = _make_logger("arena.agent")
-task_logger  = _make_logger("arena.task")
+task_logger = _make_logger("arena.task")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Traceloop
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 def init_tracing() -> None:
     Traceloop.init(
@@ -171,13 +183,19 @@ def init_tracing() -> None:
         disable_batch=True,
         telemetry_enabled=False,
     )
-    log_provider = LoggerProvider(resource=Resource.create({"service.name": "arena-adk-agent"}))
+    log_provider = LoggerProvider(
+        resource=Resource.create({"service.name": "arena-adk-agent"})
+    )
     exporter = ConsoleLogExporter()
     if TRACELOOP_API_KEY:
         from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
+
         exporter = OTLPLogExporter(
             endpoint="https://api.traceloop.com/v1/logs",
-            headers={"Authorization": f"Bearer {TRACELOOP_API_KEY}", "x-traceloop-sdk-version": "traceloop-sdk"},
+            headers={
+                "Authorization": f"Bearer {TRACELOOP_API_KEY}",
+                "x-traceloop-sdk-version": "traceloop-sdk",
+            },
         )
     log_provider.add_log_record_processor(SimpleLogRecordProcessor(exporter))
     for logger in (agent_logger, task_logger):
@@ -192,20 +210,24 @@ def init_tracing() -> None:
 # MCP helper
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 async def _mcp_call(tool_name: str, arguments: dict, state: RunState) -> str:
     """Fresh MCP session per call — avoids timeout on long Gemini generation."""
     from fastmcp.exceptions import ToolError
+
     transport = StreamableHttpTransport(url=MCP_ENDPOINT)
     try:
         async with Client(transport=transport, name="arena-adk-agent") as client:
-            set_association_properties({
-                "execution.id": state.execution_id,
-                "run.id":       state.run_id,
-                "agent.id":     state.agent_id,
-                "task.id":      state.task_id,
-                "agent.name":   AGENT_NAME,
-                "agent.stack":  AGENT_STACK,
-            })
+            set_association_properties(
+                {
+                    "execution.id": state.execution_id,
+                    "run.id": state.run_id,
+                    "agent.id": state.agent_id,
+                    "task.id": state.task_id,
+                    "agent.name": AGENT_NAME,
+                    "agent.stack": AGENT_STACK,
+                }
+            )
             if state.conversation_id:
                 set_conversation_id(state.conversation_id)
 
@@ -213,7 +235,9 @@ async def _mcp_call(tool_name: str, arguments: dict, state: RunState) -> str:
             if result is None:
                 return f"ERROR: {tool_name} returned no response"
             return "\n".join(
-                getattr(b, "text", "") for b in result.content if getattr(b, "text", None)
+                getattr(b, "text", "")
+                for b in result.content
+                if getattr(b, "text", None)
             )
     except ToolError as e:
         # Return the error message as a string so the LLM can read it and
@@ -228,6 +252,7 @@ async def _mcp_call(tool_name: str, arguments: dict, state: RunState) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 # Tool factory  — binds RunState into each tool closure
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 def make_tools(state: RunState) -> list:
     """
@@ -252,27 +277,37 @@ def make_tools(state: RunState) -> list:
         Returns:
             Server response containing AGENT_ID and current level.
         """
-        result = await _mcp_call("register_agent", {
-            "idToken":     ID_TOKEN,
-            "name":        name,
-            "stack":       stack,
-            "linkedinUrl": LINKEDIN_URL,
-            "githubUrl":   GITHUB_URL,
-        }, state)
+        result = await _mcp_call(
+            "register_agent",
+            {
+                "idToken": ID_TOKEN,
+                "name": name,
+                "stack": stack,
+                "linkedinUrl": LINKEDIN_URL,
+                "githubUrl": GITHUB_URL,
+            },
+            state,
+        )
 
         match = re.search(r"AGENT_ID:\s*(\S+?)\.?(\s|$)", result)
         if match:
             state.agent_id = match.group(1)
             state.conversation_id = state.agent_id
-            set_association_properties({"agent.id": state.agent_id, "run.id": state.run_id})
+            set_association_properties(
+                {"agent.id": state.agent_id, "run.id": state.run_id}
+            )
             set_conversation_id(state.agent_id)
 
         level_match = re.search(r"Level[:\s]+(\d+)", result)
         if level_match:
             state.current_level = int(level_match.group(1))
 
-        agent_logger.info("Registered", extra={"agent_id": state.agent_id, "run_id": state.run_id})
-        print(f"  [register_agent] agent_id={state.agent_id}  level={state.current_level}")
+        agent_logger.info(
+            "Registered", extra={"agent_id": state.agent_id, "run_id": state.run_id}
+        )
+        print(
+            f"  [register_agent] agent_id={state.agent_id}  level={state.current_level}"
+        )
         return result
 
     async def get_tasks(agent_id: str) -> str:
@@ -288,18 +323,27 @@ def make_tools(state: RunState) -> list:
         Returns:
             JSON task object, or NO_TASKS if nothing available at this level.
         """
-        result = await _mcp_call("get_tasks", {
-            "idToken": ID_TOKEN, "agentId": agent_id,
-        }, state)
+        result = await _mcp_call(
+            "get_tasks",
+            {
+                "idToken": ID_TOKEN,
+                "agentId": agent_id,
+            },
+            state,
+        )
 
         try:
             data = json.loads(result)
             if isinstance(data, dict) and "id" in data:
-                state.task_id         = data["id"]
+                state.task_id = data["id"]
                 state.conversation_id = f"{state.agent_id}-{state.task_id}"
-                set_association_properties({"task.id": state.task_id, "execution.id": state.execution_id})
+                set_association_properties(
+                    {"task.id": state.task_id, "execution.id": state.execution_id}
+                )
                 set_conversation_id(state.conversation_id)
-                print(f"  [get_tasks] task={state.task_id}  '{data.get('title')}'  L{data.get('level')}")
+                print(
+                    f"  [get_tasks] task={state.task_id}  '{data.get('title')}'  L{data.get('level')}"
+                )
         except json.JSONDecodeError:
             pass
 
@@ -321,10 +365,16 @@ def make_tools(state: RunState) -> list:
             Confirmation from the server.
         """
         print(f"  [skip_task] skipping {task_id[:8]}  reason={reason[:50]}")
-        return await _mcp_call("skip_task", {
-            "idToken": ID_TOKEN, "agentId": agent_id,
-            "taskId": task_id, "reason": reason,
-        }, state)
+        return await _mcp_call(
+            "skip_task",
+            {
+                "idToken": ID_TOKEN,
+                "agentId": agent_id,
+                "taskId": task_id,
+                "reason": reason,
+            },
+            state,
+        )
 
     async def submit_task(agent_id: str, task_id: str, content: str) -> str:
         """
@@ -347,31 +397,45 @@ def make_tools(state: RunState) -> list:
         # Stamp execution on submission span
         new_exec = str(uuid.uuid4())
         state.execution_id = new_exec
-        set_association_properties({
-            "execution.id": new_exec,
-            "task.id":      task_id,
-            "agent.id":     agent_id,
-        })
+        set_association_properties(
+            {
+                "execution.id": new_exec,
+                "task.id": task_id,
+                "agent.id": agent_id,
+            }
+        )
 
-        task_logger.info("Submitting", extra={
-            "agent_id": agent_id, "task_id": task_id, "execution_id": new_exec,
-        })
-
-        result = await _mcp_call("submit_task", {
-            "idToken":     ID_TOKEN,
-            "agentId":     agent_id,
-            "taskId":      task_id,
-            "executionId": new_exec,
-            "content":     content,
-            "metadata": {
-                "agent_name": AGENT_NAME, "agent_stack": AGENT_STACK,
-                "run_id": state.run_id, "execution_id": new_exec, "model": GEMINI_MODEL,
+        task_logger.info(
+            "Submitting",
+            extra={
+                "agent_id": agent_id,
+                "task_id": task_id,
+                "execution_id": new_exec,
             },
-        }, state)
+        )
+
+        result = await _mcp_call(
+            "submit_task",
+            {
+                "idToken": ID_TOKEN,
+                "agentId": agent_id,
+                "taskId": task_id,
+                "executionId": new_exec,
+                "content": content,
+                "metadata": {
+                    "agent_name": AGENT_NAME,
+                    "agent_stack": AGENT_STACK,
+                    "run_id": state.run_id,
+                    "execution_id": new_exec,
+                    "model": GEMINI_MODEL,
+                },
+            },
+            state,
+        )
 
         # Parse and record result
         score_match = re.search(r"Score:\s*(\d+)/100", result)
-        score       = int(score_match.group(1)) if score_match else -1
+        score = int(score_match.group(1)) if score_match else -1
         levelled_up = "LEVEL_UP" in result
 
         # Fetch current task title from state
@@ -380,10 +444,15 @@ def make_tools(state: RunState) -> list:
         state.record(state.current_level, task_title, score, levelled_up)
         print(state.scoreboard())
 
-        task_logger.info("Submitted", extra={
-            "agent_id": agent_id, "task_id": task_id,
-            "score": score, "levelled_up": levelled_up,
-        })
+        task_logger.info(
+            "Submitted",
+            extra={
+                "agent_id": agent_id,
+                "task_id": task_id,
+                "score": score,
+                "levelled_up": levelled_up,
+            },
+        )
         return result
 
     async def report_status() -> str:
@@ -462,11 +531,12 @@ def build_agent(state: RunState) -> LlmAgent:
 # Multi-turn runner
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 async def run_turn(
-    runner:          Runner,
+    runner: Runner,
     session_service: InMemorySessionService,
-    session_id:      str,
-    message:         str,
+    session_id: str,
+    message: str,
 ) -> str:
     """
     Send one message to the agent and collect the final text response.
@@ -502,13 +572,15 @@ async def run_turn(
             if hasattr(part, "function_call") and part.function_call:
                 fc = part.function_call
                 args_str = str(dict(fc.args))
-                preview  = args_str[:80]
+                preview = args_str[:80]
                 print(f"  → [{fc.name}] {preview}{'...' if len(args_str) > 80 else ''}")
 
             elif hasattr(part, "function_response") and part.function_response:
                 fr = part.function_response
                 resp_str = str(fr.response)[:100].replace("\n", " ")
-                print(f"  ← [{fr.name}] {resp_str}{'...' if len(str(fr.response)) > 100 else ''}")
+                print(
+                    f"  ← [{fr.name}] {resp_str}{'...' if len(str(fr.response)) > 100 else ''}"
+                )
 
             elif hasattr(part, "text") and part.text and event.turn_complete:
                 final_text = part.text
@@ -541,12 +613,14 @@ async def run() -> None:
     print(f"  Max turns    : {MAX_TURNS}")
     print(f"{'═' * 60}\n")
 
-    set_association_properties({
-        "run.id":       state.run_id,
-        "execution.id": state.execution_id,
-        "agent.name":   AGENT_NAME,
-        "agent.stack":  AGENT_STACK,
-    })
+    set_association_properties(
+        {
+            "run.id": state.run_id,
+            "execution.id": state.execution_id,
+            "agent.name": AGENT_NAME,
+            "agent.stack": AGENT_STACK,
+        }
+    )
 
     session_service = InMemorySessionService()
     await session_service.create_session(
@@ -555,7 +629,7 @@ async def run() -> None:
         session_id=state.run_id,
     )
 
-    agent  = build_agent(state)
+    agent = build_agent(state)
     runner = Runner(
         agent=agent,
         session_service=session_service,
@@ -565,7 +639,9 @@ async def run() -> None:
     # ── Turn 1: kick off the full lifecycle ───────────────────────────────────
     print(f"[TURN 1] Starting autonomous lifecycle...\n")
     response = await run_turn(
-        runner, session_service, state.run_id,
+        runner,
+        session_service,
+        state.run_id,
         "Start now. Register, fetch your task, solve it completely, and submit. "
         "After submitting, immediately fetch the next task and continue until "
         "NO_TASKS is returned.",
@@ -583,7 +659,9 @@ async def run() -> None:
 
         print(f"\n[TURN {turn}] Nudging agent to continue...\n")
         response = await run_turn(
-            runner, session_service, state.run_id,
+            runner,
+            session_service,
+            state.run_id,
             "Continue. Call get_tasks to check for the next challenge. "
             "If tasks are available, solve and submit. "
             "If NO_TASKS, call report_status and stop.",
@@ -592,7 +670,10 @@ async def run() -> None:
             print(f"\n[AGENT] {response[:500]}{'...' if len(response) > 500 else ''}")
 
         # Stop if the agent reported completion
-        if any(kw in response.lower() for kw in ("no_tasks", "no tasks", "stopped", "complete", "finished")):
+        if any(
+            kw in response.lower()
+            for kw in ("no_tasks", "no tasks", "stopped", "complete", "finished")
+        ):
             print("\n[LOOP] Agent signalled completion.")
             break
 
@@ -605,12 +686,15 @@ async def run() -> None:
 
     # ── Final scoreboard ──────────────────────────────────────────────────────
     print(state.scoreboard())
-    agent_logger.info("Run complete", extra={
-        "run_id":          state.run_id,
-        "total_score":     state.total_score,
-        "tasks_attempted": state.tasks_attempted,
-        "final_level":     state.current_level,
-    })
+    agent_logger.info(
+        "Run complete",
+        extra={
+            "run_id": state.run_id,
+            "total_score": state.total_score,
+            "tasks_attempted": state.tasks_attempted,
+            "final_level": state.current_level,
+        },
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
