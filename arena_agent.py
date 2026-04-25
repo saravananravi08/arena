@@ -292,7 +292,7 @@ def make_tools(state: RunState) -> list:
             state,
         )
 
-        match = re.search(r"AGENT_ID:\s*(\S+?)\.?(\s|$)", result)
+        match = re.search(r"AGENT_ID:\s*(\S+)", result)
         if match:
             state.agent_id = match.group(1)
             state.conversation_id = state.agent_id
@@ -337,6 +337,9 @@ def make_tools(state: RunState) -> list:
 
         try:
             data = json.loads(result)
+            # Handle array response (list of tasks)
+            if isinstance(data, list) and len(data) > 0:
+                data = data[0]
             if isinstance(data, dict) and "id" in data:
                 state.task_id = data["id"]
                 state.conversation_id = f"{state.agent_id}-{state.task_id}"
