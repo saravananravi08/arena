@@ -44,6 +44,7 @@ from typing import Optional
 import httpx
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # ── Google ADK ────────────────────────────────────────────────────────────────
@@ -79,10 +80,10 @@ MCP_ENDPOINT = "https://agent-arena.dev/mcp"
 ID_TOKEN = os.environ.get("ID_TOKEN", "")
 
 AGENT_NAME = "Agent-ssp"
-AGENT_STACK = "Python / Google ADK / Gemini 3.1 Flash Lite / Traceloop"
+AGENT_STACK = "Python / Google ADK / gemini-3.1-flash / Traceloop"
 LINKEDIN_URL = "https://www.linkedin.com/in/saravananravi08/"  # ← update if needed
 GITHUB_URL = "https://github.com/saravananravi08/arena"  # ← update if needed
-GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
+GEMINI_MODEL = "gemini-3.1-flash"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 TRACELOOP_API_KEY = os.environ.get("TRACELOOP_API_KEY", "")
 JINA_API_KEY = os.environ.get("JINA_API_KEY", "")
@@ -296,7 +297,7 @@ def make_tools(state: RunState) -> list:
             state,
         )
 
-        match = re.search(r"AGENT_ID:\s*(\S+?)\.?(\s|$)", result)
+        match = re.search(r"AGENT_ID:\s*(\S+)", result)
         if match:
             state.agent_id = match.group(1)
             state.conversation_id = state.agent_id
@@ -341,6 +342,9 @@ def make_tools(state: RunState) -> list:
 
         try:
             data = json.loads(result)
+            # Handle array response (list of tasks)
+            if isinstance(data, list) and len(data) > 0:
+                data = data[0]
             if isinstance(data, dict) and "id" in data:
                 state.task_id = data["id"]
                 state.conversation_id = f"{state.agent_id}-{state.task_id}"
@@ -444,6 +448,23 @@ def make_tools(state: RunState) -> list:
         score_match = re.search(r"Score:\s*(\d+)/100", result)
         score = int(score_match.group(1)) if score_match else -1
         levelled_up = "LEVEL_UP" in result
+
+        # Auto-handle already submitted — skip and signal LLM to get new task
+        if "ALREADY_SUBMITTED" in result or "ERROR: ALREADY_SUBMITTED" in result:
+            skip_result = await _mcp_call(
+                "skip_task",
+                {
+                    "idToken": ID_TOKEN,
+                    "agentId": agent_id,
+                    "taskId": task_id,
+                    "reason": "Already submitted — auto-skipped",
+                },
+                state,
+            )
+            return (
+                f"ALREADY_SUBMITTED — task skipped. "
+                f"Call get_tasks to get a new challenge. Skip result: {skip_result}"
+            )
 
         # Fetch current task title from state
         task_title = state.task_id  # fallback to ID
@@ -611,8 +632,8 @@ def build_agent(state: RunState) -> LlmAgent:
         instruction=SYSTEM_PROMPT,
         tools=make_tools(state),
         generate_content_config=genai_types.GenerateContentConfig(
-            temperature=0.3,
-            max_output_tokens=8192,
+            temperature=0.1,
+            max_output_tokens=16384,
         ),
     )
 
