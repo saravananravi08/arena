@@ -7,6 +7,9 @@ fastmcp>=2.0.0
 # HTTP client for Jina web_search / read_webpage tools
 httpx>=0.28
 
+# LiteLLM — used by ADK's LiteLlm wrapper to call the Kimi gateway
+litellm>=1.50
+
 # Observability
 traceloop-sdk>=0.47.0
 

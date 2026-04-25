@@ -49,6 +49,7 @@ load_dotenv()
 
 # ── Google ADK ────────────────────────────────────────────────────────────────
 from google.adk.agents import LlmAgent
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types as genai_types
@@ -79,12 +80,18 @@ MCP_ENDPOINT = "https://agent-arena.dev/mcp"
 
 ID_TOKEN = os.environ.get("ID_TOKEN", "")
 
-AGENT_NAME = "Agent-ssp"
-AGENT_STACK = "Python / Google ADK / gemini-3.1-flash / Traceloop"
+AGENT_NAME = "Agent-jim"
+AGENT_STACK = "Python / Google ADK / LiteLLM / Kimi K2.5 (Fireworks) / Traceloop"
 LINKEDIN_URL = "https://www.linkedin.com/in/saravananravi08/"  # ← update if needed
 GITHUB_URL = "https://github.com/saravananravi08/arena"  # ← update if needed
-GEMINI_MODEL = "gemini-3.1-flash"
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+
+# Model is served behind a LiteLLM proxy (OpenAI-compatible). The "openai/"
+# prefix tells LiteLlm to use its OpenAI-compatible client; everything after
+# is the model id the proxy itself exposes.
+MODEL_NAME = "openai/fireworks_ai/kimi-k2p5"
+LITELLM_API_KEY = os.environ.get("LITELLM_API_KEY", "")
+LITELLM_BASE_URL = os.environ.get("LITELLM_BASE_URL", "https://ai-core-workshops.com/v1")
+
 TRACELOOP_API_KEY = os.environ.get("TRACELOOP_API_KEY", "")
 JINA_API_KEY = os.environ.get("JINA_API_KEY", "")
 
@@ -438,7 +445,7 @@ def make_tools(state: RunState) -> list:
                     "agent_stack": AGENT_STACK,
                     "run_id": state.run_id,
                     "execution_id": new_exec,
-                    "model": GEMINI_MODEL,
+                    "model": MODEL_NAME,
                 },
             },
             state,
@@ -628,13 +635,15 @@ RULES:
 def build_agent(state: RunState) -> LlmAgent:
     return LlmAgent(
         name="arena_agent",
-        model=GEMINI_MODEL,
+        model=LiteLlm(
+            model=MODEL_NAME,
+            api_base=LITELLM_BASE_URL,
+            api_key=LITELLM_API_KEY,
+            temperature=0.1,
+            max_tokens=16384,
+        ),
         instruction=SYSTEM_PROMPT,
         tools=make_tools(state),
-        generate_content_config=genai_types.GenerateContentConfig(
-            temperature=0.1,
-            max_output_tokens=16384,
-        ),
     )
 
 
@@ -718,7 +727,7 @@ async def run() -> None:
     print(f"  AGENT ARENA  —  Google ADK Multi-Turn Agent")
     print(f"{'═' * 60}")
     print(f"  Agent        : {AGENT_NAME}")
-    print(f"  Model        : {GEMINI_MODEL}")
+    print(f"  Model        : {MODEL_NAME}  via  {LITELLM_BASE_URL}")
     print(f"  Run ID       : {state.run_id}")
     print(f"  Execution ID : {state.execution_id}")
     print(f"  Max turns    : {MAX_TURNS}")
