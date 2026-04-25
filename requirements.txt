@@ -11,3 +11,4 @@ traceloop-sdk>=0.47.0
 opentelemetry-api>=1.36
 opentelemetry-sdk>=1.36,<1.39
 opentelemetry-exporter-otlp-proto-http>=1.36,<1.39
+python-dotenv
