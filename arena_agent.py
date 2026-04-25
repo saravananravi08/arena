@@ -80,10 +80,10 @@ MCP_ENDPOINT = "https://agent-arena.dev/mcp"
 ID_TOKEN = os.environ.get("ID_TOKEN", "")
 
 AGENT_NAME = "Agent-ssp"
-AGENT_STACK = "Python / Google ADK / gemini-3.1-flash / Traceloop"
+AGENT_STACK = "Python / Google ADK / gemini-3-flash-preview / Traceloop"
 LINKEDIN_URL = "https://www.linkedin.com/in/saravananravi08/"  # ← update if needed
 GITHUB_URL = "https://github.com/saravananravi08/arena"  # ← update if needed
-GEMINI_MODEL = "gemini-3.1-flash"
+GEMINI_MODEL = "gemini-3-flash-preview"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 TRACELOOP_API_KEY = os.environ.get("TRACELOOP_API_KEY", "")
 JINA_API_KEY = os.environ.get("JINA_API_KEY", "")
@@ -594,34 +594,41 @@ LIFECYCLE (follow this exactly):
    - Do this once only. Note the AGENT_ID and current level.
    - linkedinUrl and githubUrl are handled automatically — do not pass them.
 
-2. LOOP — repeat until NO_TASKS or told to stop:
+2. LOOP — repeat until NO_TASKS or MAX_TURNS reached:
    a. Call get_tasks(agent_id) to fetch the current challenge.
    b. If NO_TASKS: call report_status() and stop.
    c. Read the task description carefully.
-   c.5 RESEARCH (optional): If the task asks about current facts, specific
-       libraries/APIs, recent events, or anything you are unsure of, call
-       web_search(query) and then read_webpage(url) on the most relevant
-       result before drafting your answer. Skip this for pure-reasoning
-       or coding tasks where you already know the answer with confidence.
-   d. Craft a high-quality, complete, technically correct answer IN YOUR RESPONSE.
-      The answer must be thorough — the evaluator scores on correctness,
-      efficiency, and robustness. Aim for 90+/100.
-   e. Call submit_task(agent_id, task_id, content=<your full answer>).
-   f. Read the result:
+   d. (Optional) RESEARCH: If the task requires current facts, specific
+       libraries/APIs, or anything you are unsure about, call web_search(query)
+       and read_webpage(url) on the most relevant result before drafting.
+       Skip this for pure-coding or reasoning tasks.
+   e. Craft a complete, correct, well-structured answer.
+      IMPORTANT: Output the full answer in the `content` field of submit_task.
+      Your text reply should be a brief summary only (1-2 sentences).
+      Do NOT paste large code blocks in your text reply — they belong in
+      the submit_task content field only.
+      Aim for 90+/100. Keep content under 14000 characters to avoid truncation.
+   f. Call submit_task(agent_id, task_id, content=<your full answer>).
+   g. Read the result carefully and act on it:
       - LEVEL_UP → call get_tasks again for the next level challenge.
-      - Score < 70 → the task is NOT re-submittable. Call get_tasks to check
-        if a new task appears (the server may assign a different one), then continue.
-      - ALREADY_SUBMITTED or ERROR: ALREADY_SUBMITTED → call skip_task then get_tasks for a fresh challenge.
+      - Score 70-100 (pass) → call get_tasks to continue.
+      - Score < 70 → task is not re-submittable. Call skip_task(task_id, reason)
+        then get_tasks to get a fresh challenge. Do NOT re-submit the same task.
+      - ALREADY_SUBMITTED or ERROR: ALREADY_SUBMITTED → skip_task then get_tasks.
       - NO_TASKS → call report_status() and stop.
+   h. Retry at most once per task if you receive an unexpected error.
+      If it fails again, skip it and move on.
 
 3. After stopping, always call report_status() to summarise progress.
 
 RULES:
 - Never submit the same task_id twice.
 - Always use the task_id from the most recent get_tasks call.
-- Make your answers as complete and detailed as possible — quality matters.
+- Put code/answers ONLY in the submit_task content field — not in text replies.
+- Keep content under 14000 characters to prevent truncation.
 - Use web_search / read_webpage to ground answers when factual accuracy matters.
 - Do not ask for confirmation — act autonomously.
+- Do not re-submit a task that scored below 70 — skip it instead.
 """.strip()
 
 
