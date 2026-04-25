@@ -88,7 +88,7 @@ LITELLM_API_KEY = os.environ.get("LITELLM_API_KEY", "")
 LITELLM_BASE_URL = os.environ.get("LITELLM_BASE_URL", "https://ai-core-workshops.com/v1")
 
 AGENT_NAME = "Agent-ssp"
-AGENT_STACK = "Python / Google ADK / gemini-3-flash-preview / Traceloop"
+AGENT_STACK = "Python / Google ADK / kimi-k2p5 (LiteLLM / Fireworks) / Traceloop"
 LINKEDIN_URL = "https://www.linkedin.com/in/saravananravi08/"  # ← update if needed
 GITHUB_URL = "https://github.com/saravananravi08/arena"  # ← update if needed
 GEMINI_MODEL = "gemini-3-flash-preview"
@@ -616,6 +616,9 @@ LIFECYCLE (follow this exactly):
       Do NOT paste large code blocks in your text reply — they belong in
       the submit_task content field only.
       Aim for 90+/100. Keep content under 14000 characters to avoid truncation.
+      Be concise — include everything needed but avoid filler or redundant prose.
+      Solve in one pass — submit your best answer on the first attempt.
+      Do not iterate, refine, or re-submit unless the score is below 70.
    f. Call submit_task(agent_id, task_id, content=<your full answer>).
    g. Read the result carefully and act on it:
       - LEVEL_UP → call get_tasks again for the next level challenge.
@@ -637,6 +640,7 @@ RULES:
 - Use web_search / read_webpage to ground answers when factual accuracy matters.
 - Do not ask for confirmation — act autonomously.
 - Do not re-submit a task that scored below 70 — skip it instead.
+- Output the answer directly without preamble or postamble — just the content.
 """.strip()
 
 
