@@ -41,6 +41,7 @@ import uuid
 from typing import Optional
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # ── Google ADK ────────────────────────────────────────────────────────────────
@@ -76,10 +77,10 @@ MCP_ENDPOINT = "https://agent-arena.dev/mcp"
 ID_TOKEN = os.environ.get("ID_TOKEN", "")
 
 AGENT_NAME = "Agent-ssp"
-AGENT_STACK = "Python / Google ADK / Gemini 3.1 Flash Lite / Traceloop"
+AGENT_STACK = "Python / Google ADK / gemini-3.1-flash / Traceloop"
 LINKEDIN_URL = "https://www.linkedin.com/in/saravananravi08/"  # ← update if needed
 GITHUB_URL = "https://github.com/saravananravi08/arena"  # ← update if needed
-GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
+GEMINI_MODEL = "gemini-3.1-flash"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 TRACELOOP_API_KEY = os.environ.get("TRACELOOP_API_KEY", "")
 
