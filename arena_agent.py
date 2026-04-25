@@ -445,6 +445,23 @@ def make_tools(state: RunState) -> list:
         score = int(score_match.group(1)) if score_match else -1
         levelled_up = "LEVEL_UP" in result
 
+        # Auto-handle already submitted — skip and signal LLM to get new task
+        if "ALREADY_SUBMITTED" in result or "ERROR: ALREADY_SUBMITTED" in result:
+            skip_result = await _mcp_call(
+                "skip_task",
+                {
+                    "idToken": ID_TOKEN,
+                    "agentId": agent_id,
+                    "taskId": task_id,
+                    "reason": "Already submitted — auto-skipped",
+                },
+                state,
+            )
+            return (
+                f"ALREADY_SUBMITTED — task skipped. "
+                f"Call get_tasks to get a new challenge. Skip result: {skip_result}"
+            )
+
         # Fetch current task title from state
         task_title = state.task_id  # fallback to ID
 
@@ -528,8 +545,8 @@ def build_agent(state: RunState) -> LlmAgent:
         instruction=SYSTEM_PROMPT,
         tools=make_tools(state),
         generate_content_config=genai_types.GenerateContentConfig(
-            temperature=0.3,
-            max_output_tokens=8192,
+            temperature=0.1,
+            max_output_tokens=16384,
         ),
     )
 
